@@ -93,13 +93,13 @@ public class Personaje
         Random rand = new Random();
 
 
-        NPersonaje.caracteristicas.Velocidad1 = rand.Next(1, 10);
-        NPersonaje.caracteristicas.Destreza1 = rand.Next(1, 5);
-        NPersonaje.caracteristicas.Fuerza1 = rand.Next(1, 10);
-        NPersonaje.caracteristicas.Nivel1 = rand.Next(1, 10);
-        NPersonaje.caracteristicas.Armadura1 = rand.Next(1, 10);
+        NPersonaje.caracteristicas.Velocidad1 = rand.Next(1, 11);
+        NPersonaje.caracteristicas.Destreza1 = rand.Next(1, 6);
+        NPersonaje.caracteristicas.Fuerza1 = rand.Next(1, 11);
+        NPersonaje.caracteristicas.Nivel1 = rand.Next(1, 11);
+        NPersonaje.caracteristicas.Armadura1 = rand.Next(1, 11);
         
-        int dato = rand.Next(1, 8);
+        int dato = rand.Next(1, 9);
 
         switch (dato)
         {
@@ -147,7 +147,7 @@ public class Personaje
             break;
         }
 
-        NPersonaje.datos.FechaNac1 = new DateTime(rand.Next(1710, 2010), rand.Next(1, 13),rand.Next(1, 32));
+        NPersonaje.datos.FechaNac1 = new DateTime(rand.Next(1710, 2011), rand.Next(1, 13), rand.Next(1, 29));
 
         NPersonaje.datos.Edad1 = NPersonaje.calcularEdad(NPersonaje.datos.FechaNac1);
 
@@ -171,4 +171,26 @@ public class Personaje
         Console.WriteLine($"Nivel: [{caracteristicas.Nivel1}]");
         Console.WriteLine($"Armadura: [{caracteristicas.Armadura1}]");
     } 
+
+    public void mostrarApodo()
+    {
+        Console.WriteLine(datos.Apodo1);
+    }
+
+    public void mejoraDeHabilidades(Personaje ganador){
+        if (ganador.datos.Salud1 == 100)
+        {
+            Random rand = new Random();
+            int agregarFuerza = rand.Next(5, 11);
+            ganador.caracteristicas.Fuerza1 = ganador.caracteristicas.Fuerza1 + (ganador.caracteristicas.Fuerza1 / agregarFuerza);
+        } else
+        {
+            ganador.datos.Salud1 = ganador.datos.Salud1 + (ganador.datos.Salud1 / 10);
+            if (ganador.datos.Salud1 > 100)
+            {
+                ganador.datos.Salud1 = 100;
+            }
+        }
+    }
+
 }
