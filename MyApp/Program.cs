@@ -245,7 +245,7 @@ int corroborarPerdedor(Personaje jugador1, Personaje jugador2, int numEnListaJug
 
 void opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2, int perdedor)
 {
-    if (ListadoDePersonajes.Count == 1) //verifico que queden personajes en la lista para terminar la recursividad y el último que queda es el ganador
+    if (ListadoDePersonajes.Count != 1) //verifico que queden personajes en la lista para terminar la recursividad y el último que queda es el ganador
     {    
         if (perdedor == jugador1) //si coinciden los índices
         {
