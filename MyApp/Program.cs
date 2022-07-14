@@ -6,6 +6,14 @@ int indefinido = 999;
 
 List<Personaje> ListadoDePersonajes = new List<Personaje>();
 
+string PathCarpeta = "ganadores.csv";
+
+if (!File.Exists(PathCarpeta))
+{
+    File.Create(PathCarpeta);
+}
+
+
 for (int i = 0; i < 8; i++)
 {
     Personaje personaje = new Personaje();
@@ -27,6 +35,9 @@ for (int i = 0; i < 8; i++)
 
 
 // ACÁ INICIA EL JUEGO MOSTRANDO LOS PERSONAJES PARA SER SELECCIONADOS
+mostrarHistorialDeCombates();
+
+Console.WriteLine("\n\nAhora si, a jugar...");
 mostrarPersonajesDisponibles(ListadoDePersonajes);
 int jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count, indefinido);
 int jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count, jugador1);
@@ -34,6 +45,7 @@ int perdedor = pelea(ListadoDePersonajes, jugador1, jugador2);
 
 Personaje ganador = opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
 mostrarGanador(ganador);
+mostrarHistorialDeCombates();
 
 
 
@@ -250,10 +262,13 @@ int corroborarPerdedor(Personaje jugador1, Personaje jugador2, int numEnListaJug
 }
 
 Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2, int perdedor)
-{     
+{
     if (perdedor == jugador1) //si coinciden los índices
     {
         Console.WriteLine($"\nJUGADOR 1 con {ListadoDePersonajes[jugador1].datos.Apodo1} ELIMINADOS");
+
+        string linea = $"{ListadoDePersonajes[jugador1].datos.Apodo1} VS {ListadoDePersonajes[jugador2].datos.Apodo1} | GANADOR: {ListadoDePersonajes[jugador2].datos.Apodo1} con [{ListadoDePersonajes[jugador2].datos.Salud1}] vidas restantes\n";
+        File.AppendAllText(PathCarpeta, linea);
 
         if ((jugador1 == 0) || (jugador2 > jugador1)) //hago este control por si el personaje estaba en la primera posición de la lista, ya que si se borra el elemento se cambia el próximo índice O SINO por si el jugador que queda estaba por encima del jugador a eliminar en la lista
         {
@@ -286,6 +301,9 @@ Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, in
     else if (perdedor == jugador2) //si coinciden los índices
     {
         Console.WriteLine($"\nJUGADOR 2 con {ListadoDePersonajes[jugador2].datos.Apodo1} ELIMINADOS");
+
+        string linea = $"{ListadoDePersonajes[jugador1].datos.Apodo1} VS {ListadoDePersonajes[jugador2].datos.Apodo1} | GANADOR: {ListadoDePersonajes[jugador1].datos.Apodo1} con [{ListadoDePersonajes[jugador1].datos.Salud1}] vidas restantes\n";
+        File.AppendAllText(PathCarpeta, linea);
 
         if ((jugador2 == 0) || (jugador1 > jugador2)) //hago este control por si el personaje estaba en la primera posición de la lista, ya que si se borra el elemento se cambia el próximo índice O SINO por si el jugador que queda estaba por encima del jugador a eliminar en la lista
         {
@@ -348,4 +366,30 @@ void mostrarGanador(Personaje Ganador)
     Console.WriteLine("\n----------EL GANADOR ES----------");
     Console.WriteLine($"\n         {Ganador.datos.Apodo1}");
     Console.WriteLine($"\nCon un total de {Ganador.datos.Salud1} vidas\n\n");
+
+    string linea = $"\nGANADOR: {Ganador.datos.Apodo1} con [{Ganador.datos.Salud1}] vidas restantes\n\n";
+    File.AppendAllText(PathCarpeta, linea);
+}
+
+void mostrarHistorialDeCombates()
+{
+    Console.WriteLine("\n¿Desea ver el historial de combates de este juego?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
+    char salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+    while ((salida != 's') && (salida != 'n'))
+    {
+        Console.WriteLine("\nError de formato.\n¿Desea ver el historial de combates de este juego?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
+        salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+    }
+
+    if (salida == 's')
+    {
+        Console.WriteLine("\n\n");
+
+        List<string> LineasDelArchivo = File.ReadAllLines(PathCarpeta).ToList();
+
+        foreach (string Linea in LineasDelArchivo)
+        {
+            Console.WriteLine(Linea);
+        }
+    }
 }
