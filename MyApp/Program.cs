@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
 
+int indefinido = 999;
 
 
 List<Personaje> ListadoDePersonajes = new List<Personaje>();
@@ -27,12 +28,12 @@ for (int i = 0; i < 8; i++)
 
 // ACÁ INICIA EL JUEGO MOSTRANDO LOS PERSONAJES PARA SER SELECCIONADOS
 mostrarPersonajesDisponibles(ListadoDePersonajes);
-int jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count);
-int jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count);
+int jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count, indefinido);
+int jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count, jugador1);
 int perdedor = pelea(ListadoDePersonajes, jugador1, jugador2);
 
-opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
-
+Personaje ganador = opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
+mostrarGanador(ganador);
 
 
 
@@ -67,13 +68,12 @@ void mostrarPersonajesDisponibles(List<Personaje> ListadoDePersonajes)
     Console.WriteLine("\nPERSONAJES DISPONIBLES\n");
     for (int i = 0; i < ListadoDePersonajes.Count; i++)
     {
-        Console.Write($"[{i+1}]");
+        Console.Write($"[{i}]");
         ListadoDePersonajes[i].mostrarApodo();   
     }
-    
 }
 
-int elegirPersonaje(int num, int cantPersonajes)
+int elegirPersonaje(int num, int cantPersonajes, int personajeElegido)
 {
     Console.WriteLine($"\nJUGADOR [{num}] Escoja un personaje: ");
     int opcion = int.Parse(Console.ReadLine());
@@ -82,56 +82,56 @@ int elegirPersonaje(int num, int cantPersonajes)
     switch (cantPersonajes)
     {
         case 1:
-            while ((opcion < 1) || (opcion > 1))
+            while ((opcion < 0) || (opcion > 0))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
             }
             break;
         case 2:
-            while ((opcion < 1) || (opcion > 2))
+            while ((opcion < 0) || (opcion > 1))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
             }
             break;
         case 3:
-            while ((opcion < 1) || (opcion > 3))
+            while ((opcion < 0) || (opcion > 2))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
             }
             break;
         case 4:
-            while ((opcion < 1) || (opcion > 4))
+            while ((opcion < 0) || (opcion > 3))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
             }
             break;
         case 5:
-            while ((opcion < 1) || (opcion > 5))
+            while ((opcion < 0) || (opcion > 4))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
             }
             break;
         case 6:
-            while ((opcion < 1) || (opcion > 6))
+            while ((opcion < 0) || (opcion > 5))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
             }
             break;
         case 7:
-            while ((opcion < 1) || (opcion > 7))
+            while ((opcion < 0) || (opcion > 6))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
             }
             break;
         case 8:
-            while ((opcion < 1) || (opcion > 8))
+            while ((opcion < 0) || (opcion > 7))
             {
                 Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
                 opcion = int.Parse(Console.ReadLine());
@@ -141,31 +141,37 @@ int elegirPersonaje(int num, int cantPersonajes)
             break;
     }
 
+    while (opcion == personajeElegido)
+    {
+        Console.WriteLine($"\nEl personaje ya fue elegido.\nJUGADOR [{num}] Escoja un personaje: ");
+        opcion = int.Parse(Console.ReadLine());
+    }
+
     //el switch opción es para retornar el indice del personaje elegido, retorna de 0 a 8 porque son los elementos de la lista, caso de 1 a 8 porque así muestro los personajes
     switch (opcion)
     {
-        case 1:
+        case 0:
             return 0;
             break;
-        case 2:
+        case 1:
             return 1;
             break;
-        case 3:
+        case 2:
             return 2;
             break;
-        case 4:
+        case 3:
             return 3;
             break;
-        case 5:
+        case 4:
             return 4;
             break;
-        case 6:
+        case 5:
             return 5;
             break;
-        case 7:
+        case 6:
             return 6;
             break;
-        case 8:
+        case 7:
             return 7;
             break;
         default:
@@ -243,64 +249,103 @@ int corroborarPerdedor(Personaje jugador1, Personaje jugador2, int numEnListaJug
     }
 }
 
-void opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2, int perdedor)
-{
-    if (ListadoDePersonajes.Count != 1) //verifico que queden personajes en la lista para terminar la recursividad y el último que queda es el ganador
-    {    
-        if (perdedor == jugador1) //si coinciden los índices
-        {
-            Console.WriteLine($"\nJUGADOR 1 con {ListadoDePersonajes[jugador1].datos.Apodo1} ELIMINADOS");
-            ListadoDePersonajes.Remove(ListadoDePersonajes[jugador1]);
+Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2, int perdedor)
+{     
+    if (perdedor == jugador1) //si coinciden los índices
+    {
+        Console.WriteLine($"\nJUGADOR 1 con {ListadoDePersonajes[jugador1].datos.Apodo1} ELIMINADOS");
 
-            mostrarPersonajesDisponibles(ListadoDePersonajes);
-            jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count);
-            if (jugador2 == ListadoDePersonajes.Count+1) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
-            {
-                jugador2--;
-            }
-            perdedor = pelea(ListadoDePersonajes, jugador1, jugador2); //genero otra pelea
-            opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor); //según el perdedor elijo nuevos personajes
+        if ((jugador1 == 0) || (jugador2 > jugador1)) //hago este control por si el personaje estaba en la primera posición de la lista, ya que si se borra el elemento se cambia el próximo índice O SINO por si el jugador que queda estaba por encima del jugador a eliminar en la lista
+        {
+            jugador2--;
         }
-        else if (perdedor == jugador2) //si coinciden los índices
-        {
-            Console.WriteLine($"\nJUGADOR 2 con {ListadoDePersonajes[jugador2].datos.Apodo1} ELIMINADOS");
-            ListadoDePersonajes.Remove(ListadoDePersonajes[jugador2]);
 
-            mostrarPersonajesDisponibles(ListadoDePersonajes);
-            jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count);
-            if (jugador1 == ListadoDePersonajes.Count+1) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
-            {
-                jugador1--;
-            }
-            perdedor = pelea(ListadoDePersonajes, jugador1, jugador2); //genero otra pelea
-            opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor); //según el perdedor elijo nuevos personajes
+        ListadoDePersonajes.Remove(ListadoDePersonajes[jugador1]);
+
+        if (ListadoDePersonajes.Count == 1)
+        {
+            Console.WriteLine("\n\n\n¡No quedan personajes!");
+            return ListadoDePersonajes[0];
+        }
+        mostrarPersonajesDisponibles(ListadoDePersonajes);
+        
+        if (jugador2 == ListadoDePersonajes.Count) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
+        {
+            jugador2--;
+        }
+        if (jugador1 == ListadoDePersonajes.Count) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
+        {
+            jugador1--;
+        }
+
+        jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count, jugador2);
+
+        perdedor = pelea(ListadoDePersonajes, jugador1, jugador2); //genero otra pelea
+        opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor); //según el perdedor elijo nuevos personajes
+    }
+    else if (perdedor == jugador2) //si coinciden los índices
+    {
+        Console.WriteLine($"\nJUGADOR 2 con {ListadoDePersonajes[jugador2].datos.Apodo1} ELIMINADOS");
+
+        if ((jugador2 == 0) || (jugador1 > jugador2)) //hago este control por si el personaje estaba en la primera posición de la lista, ya que si se borra el elemento se cambia el próximo índice O SINO por si el jugador que queda estaba por encima del jugador a eliminar en la lista
+        {
+            jugador1--;
+        }
+
+        ListadoDePersonajes.Remove(ListadoDePersonajes[jugador2]);
+
+        if (ListadoDePersonajes.Count == 1)
+        {
+            Console.WriteLine("\n\n\n¡No quedan personajes!");
+            return ListadoDePersonajes[0];
+        }
+        mostrarPersonajesDisponibles(ListadoDePersonajes);
+        
+        if (jugador1 == ListadoDePersonajes.Count) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
+        {
+            jugador1--;
+        }
+
+        if (jugador2 == ListadoDePersonajes.Count) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
+        {
+            jugador2--;
+        }
+
+        jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count, jugador1);
+        perdedor = pelea(ListadoDePersonajes, jugador1, jugador2); //genero otra pelea
+        opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor); //según el perdedor elijo nuevos personajes
+    }
+    else
+    {
+        Console.Write("\nHUBO UN EMPATE\n¿Jugar con los mismos personajes?\nOPCIONES:\n[S] SI\n[N] NO\nElija una opción: ");
+        int mismosPersonajes = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+        while ((mismosPersonajes != 's') && (mismosPersonajes != 'n'))
+        {
+            Console.Write("\nError de formato\nHUBO UN EMPATE\n¿Jugar con los mismos personajes?\nOPCIONES:\n[S] SI\n[N] NO\nElija una opción: ");
+            mismosPersonajes = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+        }
+
+        if (mismosPersonajes == 's')
+        {
+            perdedor = pelea(ListadoDePersonajes, jugador1, jugador2);
+            opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
         }
         else
         {
-            Console.Write("\nHUBO UN EMPATE\n¿Jugar con los mismos personajes?\nOPCIONES:\n[S] SI\n[N] NO\nElija una opción: ");
-            int mismosPersonajes = Char.ToLower(Convert.ToChar(Console.ReadLine()));
-            while ((mismosPersonajes != 's') && (mismosPersonajes != 'n'))
-            {
-                Console.Write("\nError de formato\nHUBO UN EMPATE\n¿Jugar con los mismos personajes?\nOPCIONES:\n[S] SI\n[N] NO\nElija una opción: ");
-                mismosPersonajes = Char.ToLower(Convert.ToChar(Console.ReadLine()));
-            }
-
-            if (mismosPersonajes == 's')
-            {
-                perdedor = pelea(ListadoDePersonajes, jugador1+1, jugador2+1);
-                opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
-            }
-            else
-            {
-                mostrarPersonajesDisponibles(ListadoDePersonajes);
-                jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count);
-                jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count);
-                perdedor = pelea(ListadoDePersonajes, jugador1, jugador2);
-                opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
-            }
+            mostrarPersonajesDisponibles(ListadoDePersonajes);
+            jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count, indefinido);
+            jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count, jugador1);
+            perdedor = pelea(ListadoDePersonajes, jugador1, jugador2);
+            opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
         }
-    } else
-    {
-        Console.WriteLine("\nNo quedan personajes!");
     }
+
+    return ListadoDePersonajes[0];
+}
+
+void mostrarGanador(Personaje Ganador)
+{
+    Console.WriteLine("\n----------EL GANADOR ES----------");
+    Console.WriteLine($"\n         {Ganador.datos.Apodo1}");
+    Console.WriteLine($"\nCon un total de {Ganador.datos.Salud1} vidas\n\n");
 }
