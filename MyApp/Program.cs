@@ -1,41 +1,37 @@
 ﻿// See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 int indefinido = 999;
 
 
+
 List<Personaje> ListadoDePersonajes = new List<Personaje>();
 
+// Acá creo los archivos csv y Json
 string PathCarpeta = "ganadores.csv";
+string PathJson = "jugadores.json";
 
 if (!File.Exists(PathCarpeta))
 {
     File.Create(PathCarpeta);
 }
 
-
-for (int i = 0; i < 8; i++)
+if (!File.Exists(PathJson))
 {
-    Personaje personaje = new Personaje();
-    personaje = personaje.cargarPersonajes();
-
-    ListadoDePersonajes.Add(personaje);
-
-    if ((ListadoDePersonajes.Count != 1))
-    {
-        // corroboro la existencia así no se crean personajes con nombres iguales
-        while (corroborarExistencia(ListadoDePersonajes, personaje, i))
-        {
-            ListadoDePersonajes.Remove(personaje);
-            personaje = personaje.cargarPersonajes();
-            ListadoDePersonajes.Add(personaje);
-        }
-    }
+    File.Create(PathJson);
 }
 
 
-// ACÁ INICIA EL JUEGO MOSTRANDO LOS PERSONAJES PARA SER SELECCIONADOS
+
+
+// ACÁ INICIA EL JUEGO MOSTRANDO EL HISTORIAL DE COMBATES
 mostrarHistorialDeCombates();
+
+// Acá creo los personajes
+ListadoDePersonajes = CargaDePersonajes();
+
 
 Console.WriteLine("\n\nAhora si, a jugar...");
 mostrarPersonajesDisponibles(ListadoDePersonajes);
@@ -49,13 +45,14 @@ mostrarHistorialDeCombates();
 
 
 
+
 bool corroborarExistencia(List<Personaje> ListadoDePersonajes, Personaje personaje, int indice)
 {
     bool bandera = true;
 
     for (int i = 0; i < ListadoDePersonajes.Count; i++)
     {
-        if (personaje.datos.Nombre1 == ListadoDePersonajes[i].datos.Nombre1)
+        if (personaje.Datos.Nombre == ListadoDePersonajes[i].Datos.Nombre)
         {
             if (i == indice) //si es el mismo nombre pero el mismo indice es porque el dato es el último agregado, no se repitió
             {
@@ -201,26 +198,26 @@ int pelea(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2)
 
     if (primeroEnAtacar == 1)
     {
-        Console.WriteLine($"\nComienza atacando el jugador 1 con {ListadoDePersonajes[jugador1].datos.Apodo1}");
+        Console.WriteLine($"\nComienza atacando el jugador 1 con {ListadoDePersonajes[jugador1].Datos.Apodo}");
     }
     else
     {
-        Console.WriteLine($"\nComienza atacando el jugador 2 con {ListadoDePersonajes[jugador2].datos.Apodo1}");
+        Console.WriteLine($"\nComienza atacando el jugador 2 con {ListadoDePersonajes[jugador2].Datos.Apodo}");
     }
 
     for (int j = 0; j < 3; j++) //hasta 3 porque son 3 golpes que piden en la consigna
     {   
-        if ((ListadoDePersonajes[jugador1].datos.Salud1 > 0) && (ListadoDePersonajes[jugador2].datos.Salud1 > 0)) //corroboro que tengan salud sino no tiene sentido seguir la batalla
+        if ((ListadoDePersonajes[jugador1].Datos.Salud > 0) && (ListadoDePersonajes[jugador2].Datos.Salud > 0)) //corroboro que tengan salud sino no tiene sentido seguir la batalla
         {    
             if (primeroEnAtacar == 1)
             {
-                ListadoDePersonajes[jugador2].datos.Salud1 = combate.combate(ListadoDePersonajes[jugador1], ListadoDePersonajes[jugador2]); //ataca primero jugador 1, defiende jugador 2
-                ListadoDePersonajes[jugador1].datos.Salud1 = combate.combate(ListadoDePersonajes[jugador2], ListadoDePersonajes[jugador1]); //ataca jugador 2, defiende jugador 1
+                ListadoDePersonajes[jugador2].Datos.Salud = combate.combate(ListadoDePersonajes[jugador1], ListadoDePersonajes[jugador2]); //ataca primero jugador 1, defiende jugador 2
+                ListadoDePersonajes[jugador1].Datos.Salud = combate.combate(ListadoDePersonajes[jugador2], ListadoDePersonajes[jugador1]); //ataca jugador 2, defiende jugador 1
             }
             else
             {
-                ListadoDePersonajes[jugador1].datos.Salud1 = combate.combate(ListadoDePersonajes[jugador2], ListadoDePersonajes[jugador1]); //ataca primero jugador 2, defiende jugador 1
-                ListadoDePersonajes[jugador2].datos.Salud1 = combate.combate(ListadoDePersonajes[jugador1], ListadoDePersonajes[jugador2]); //ataca jugador 1, defiende jugador 2
+                ListadoDePersonajes[jugador1].Datos.Salud = combate.combate(ListadoDePersonajes[jugador2], ListadoDePersonajes[jugador1]); //ataca primero jugador 2, defiende jugador 1
+                ListadoDePersonajes[jugador2].Datos.Salud = combate.combate(ListadoDePersonajes[jugador1], ListadoDePersonajes[jugador2]); //ataca jugador 1, defiende jugador 2
             }
         }
     }
@@ -230,9 +227,9 @@ int pelea(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2)
 
 int corroborarPerdedor(Personaje jugador1, Personaje jugador2, int numEnListaJugador1, int numEnListaJugador2)
 {
-    if((jugador1.datos.Salud1 != 0)  &&  (jugador2.datos.Salud1 != 0)) //corroboro que ambos tengan algo de salud
+    if((jugador1.Datos.Salud != 0)  &&  (jugador2.Datos.Salud != 0)) //corroboro que ambos tengan algo de salud
     {
-        if(jugador1.datos.Salud1 > jugador2.datos.Salud1) //gana el jugador 1
+        if(jugador1.Datos.Salud > jugador2.Datos.Salud) //gana el jugador 1
         {    
             jugador1.mejoraDeHabilidades(jugador1);
             return numEnListaJugador2; //retorno jugador 2 como perdedor
@@ -243,12 +240,12 @@ int corroborarPerdedor(Personaje jugador1, Personaje jugador2, int numEnListaJug
         }
     }else
     {
-        if((jugador1.datos.Salud1 == 0) && (jugador2.datos.Salud1 == 0)) //si hay empate retorno un número cualquiera e insignificante
+        if((jugador1.Datos.Salud == 0) && (jugador2.Datos.Salud == 0)) //si hay empate retorno un número cualquiera e insignificante
         {   
             return 9;
         } else
         {
-            if(jugador1.datos.Salud1 == 0) //el jugador 1 no tiene vida, gana el jugador 2
+            if(jugador1.Datos.Salud == 0) //el jugador 1 no tiene vida, gana el jugador 2
             {
                 jugador2.mejoraDeHabilidades(jugador2);
                 return numEnListaJugador1; //retorno jugador 1 como perdedor
@@ -265,9 +262,9 @@ Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, in
 {
     if (perdedor == jugador1) //si coinciden los índices
     {
-        Console.WriteLine($"\nJUGADOR 1 con {ListadoDePersonajes[jugador1].datos.Apodo1} ELIMINADOS");
+        Console.WriteLine($"\nJUGADOR 1 con {ListadoDePersonajes[jugador1].Datos.Apodo} ELIMINADOS");
 
-        string linea = $"{ListadoDePersonajes[jugador1].datos.Apodo1} VS {ListadoDePersonajes[jugador2].datos.Apodo1} | GANADOR: {ListadoDePersonajes[jugador2].datos.Apodo1} con [{ListadoDePersonajes[jugador2].datos.Salud1}] vidas restantes\n";
+        string linea = $"{ListadoDePersonajes[jugador1].Datos.Apodo} VS {ListadoDePersonajes[jugador2].Datos.Apodo} | GANADOR: {ListadoDePersonajes[jugador2].Datos.Apodo} con [{ListadoDePersonajes[jugador2].Datos.Salud}] vidas restantes\n";
         File.AppendAllText(PathCarpeta, linea);
 
         if ((jugador1 == 0) || (jugador2 > jugador1)) //hago este control por si el personaje estaba en la primera posición de la lista, ya que si se borra el elemento se cambia el próximo índice O SINO por si el jugador que queda estaba por encima del jugador a eliminar en la lista
@@ -300,9 +297,9 @@ Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, in
     }
     else if (perdedor == jugador2) //si coinciden los índices
     {
-        Console.WriteLine($"\nJUGADOR 2 con {ListadoDePersonajes[jugador2].datos.Apodo1} ELIMINADOS");
+        Console.WriteLine($"\nJUGADOR 2 con {ListadoDePersonajes[jugador2].Datos.Apodo} ELIMINADOS");
 
-        string linea = $"{ListadoDePersonajes[jugador1].datos.Apodo1} VS {ListadoDePersonajes[jugador2].datos.Apodo1} | GANADOR: {ListadoDePersonajes[jugador1].datos.Apodo1} con [{ListadoDePersonajes[jugador1].datos.Salud1}] vidas restantes\n";
+        string linea = $"{ListadoDePersonajes[jugador1].Datos.Apodo} VS {ListadoDePersonajes[jugador2].Datos.Apodo} | GANADOR: {ListadoDePersonajes[jugador1].Datos.Apodo} con [{ListadoDePersonajes[jugador1].Datos.Salud}] vidas restantes\n";
         File.AppendAllText(PathCarpeta, linea);
 
         if ((jugador2 == 0) || (jugador1 > jugador2)) //hago este control por si el personaje estaba en la primera posición de la lista, ya que si se borra el elemento se cambia el próximo índice O SINO por si el jugador que queda estaba por encima del jugador a eliminar en la lista
@@ -364,16 +361,16 @@ Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, in
 void mostrarGanador(Personaje Ganador)
 {
     Console.WriteLine("\n----------EL GANADOR ES----------");
-    Console.WriteLine($"\n         {Ganador.datos.Apodo1}");
-    Console.WriteLine($"\nCon un total de {Ganador.datos.Salud1} vidas\n\n");
+    Console.WriteLine($"\n         {Ganador.Datos.Apodo}");
+    Console.WriteLine($"\nCon un total de {Ganador.Datos.Salud} vidas\n\n");
 
-    string linea = $"\nGANADOR: {Ganador.datos.Apodo1} con [{Ganador.datos.Salud1}] vidas restantes\n\n";
+    string linea = $"\nGANADOR: {Ganador.Datos.Apodo} con [{Ganador.Datos.Salud}] vidas restantes\n\n";
     File.AppendAllText(PathCarpeta, linea);
 }
 
 void mostrarHistorialDeCombates()
 {
-    Console.WriteLine("\n¿Desea ver el historial de combates de este juego?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
+    Console.WriteLine("\n\n¿Desea ver el historial de combates de este juego?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
     char salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
     while ((salida != 's') && (salida != 'n'))
     {
@@ -392,4 +389,72 @@ void mostrarHistorialDeCombates()
             Console.WriteLine(Linea);
         }
     }
+}
+
+List<Personaje> CargaDePersonajes()
+{
+    // Guardo la cantidad de personajes
+    string jsonCantJugadores = File.ReadAllText(PathJson);
+
+    if (jsonCantJugadores.Length > 0) // Corroboro que hayan personajes
+    {
+        Console.WriteLine("\n\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
+        int opcion = int.Parse(Console.ReadLine());
+        while ((opcion < 1) || (opcion > 2))
+        {
+            Console.WriteLine($"\nError de formato.\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
+            opcion = int.Parse(Console.ReadLine());
+        }
+
+        if (opcion == 1)
+        {   // Como hay personajes y quiero cargarlos, deserializo el json y guardo los objetos en la lista
+            ListadoDePersonajes = JsonSerializer.Deserialize<List<Personaje>>(jsonCantJugadores);
+        }
+        else
+        {   // Como hay personajes pero no quiere cargarlos, los genero aleatorio y pregunto si quiere actualizar la lista anterior
+            generarPersonajesAleatorios(ListadoDePersonajes);
+            Console.WriteLine("\n¿Desea actualizar el listado anterior de personajes?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
+            char salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+            while ((salida != 's') && (salida != 'n'))
+            {
+                Console.WriteLine("\nError de formato.\n¿Desea actualizar el listado anterior de personajes?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
+                salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+            }
+            if (salida == 's')
+            {
+                string JsonString = JsonSerializer.Serialize(ListadoDePersonajes);
+                File.WriteAllText(PathJson, JsonString);
+            }
+        }
+    }
+    else
+    {   // Como no hay personajes, los genero aleatorio y los guardo en el JSON
+        generarPersonajesAleatorios(ListadoDePersonajes);
+        string JsonString = JsonSerializer.Serialize(ListadoDePersonajes);
+        File.WriteAllText(PathJson, JsonString);
+    }
+
+    void generarPersonajesAleatorios(List<Personaje> ListadoDePersonajes)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            Personaje personaje = new Personaje();
+            personaje = personaje.cargarPersonajes();
+
+            ListadoDePersonajes.Add(personaje);
+
+            if ((ListadoDePersonajes.Count != 1))
+            {
+                // corroboro la existencia así no se crean personajes con nombres iguales
+                while (corroborarExistencia(ListadoDePersonajes, personaje, i))
+                {
+                    ListadoDePersonajes.Remove(personaje);
+                    personaje = personaje.cargarPersonajes();
+                    ListadoDePersonajes.Add(personaje);
+                }
+            }
+        }
+    }
+
+    return ListadoDePersonajes;
 }

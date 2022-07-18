@@ -33,48 +33,52 @@ public enum Apodos
     SpiderMan
 }
 
-public struct Caracteristicas
+public class Caracteristicas
 {
-    private int Velocidad;
-    private int Destreza;
-    private int Fuerza;
-    private int Nivel;
-    private int Armadura;
+    private int velocidad;
+    private int destreza;
+    private int fuerza;
+    private int nivel;
+    private int armadura;
 
-    public int Velocidad1 { get => Velocidad; set => Velocidad = value; }
-    public int Destreza1 { get => Destreza; set => Destreza = value; }
-    public int Fuerza1 { get => Fuerza; set => Fuerza = value; }
-    public int Nivel1 { get => Nivel; set => Nivel = value; }
-    public int Armadura1 { get => Armadura; set => Armadura = value; }
+    public int Velocidad { get => velocidad; set => velocidad = value; }
+    public int Destreza { get => destreza; set => destreza = value; }
+    public int Fuerza { get => fuerza; set => fuerza = value; }
+    public int Nivel { get => nivel; set => nivel = value; }
+    public int Armadura { get => armadura; set => armadura = value; }
 }
 
-public struct Datos
+public class Datos
 {
-    private Tipos Tipo;
-    private Nombres Nombre;
-    private Apodos Apodo;
-    private DateTime FechaNac;
-    private int Edad;
-    private int Salud;
+    private Tipos tipo;
+    private Nombres nombre;
+    private Apodos apodo;
+    private DateTime fechaNac;
+    private int edad;
+    private int salud;
 
-    public Tipos Tipo1 { get => Tipo; set => Tipo = value; }
-    public Nombres Nombre1 { get => Nombre; set => Nombre = value; }
-    public Apodos Apodo1 { get => Apodo; set => Apodo = value; }
-    public DateTime FechaNac1 { get => FechaNac; set => FechaNac = value; }
-    public int Edad1 { get => Edad; set => Edad = value; }
-    public int Salud1 { get => Salud; set => Salud = value; }
+    public Tipos Tipo { get => tipo; set => tipo = value; }
+    public Nombres Nombre { get => nombre; set => nombre = value; }
+    public Apodos Apodo { get => apodo; set => apodo = value; }
+    public DateTime FechaNac { get => fechaNac; set => fechaNac = value; }
+    public int Edad { get => edad; set => edad = value; }
+    public int Salud { get => salud; set => salud = value; }
 }
 
 
 public class Personaje
 {
-    public Datos datos;
-    public Caracteristicas caracteristicas;
+    private Datos datos = new Datos();
+    private Caracteristicas caracteristicas = new Caracteristicas();
+    DateTime now = DateTime.Today;
+    private int edad = 0;
+
+    public Datos Datos { get => datos; set => datos = value; }
+    public Caracteristicas Caracteristicas { get => caracteristicas; set => caracteristicas = value; }
+    public DateTime Now { get => now; set => now = value; }
+    public int Edad { get => edad; set => edad = value; }
 
 
-
-    DateTime Now = DateTime.Today;
-    public int Edad = 0;
     public int calcularEdad(DateTime fechaNac)
     {
         Edad = Now.Year - fechaNac.Year;
@@ -92,66 +96,65 @@ public class Personaje
         Personaje NPersonaje = new Personaje();
         Random rand = new Random();
 
-
-        NPersonaje.caracteristicas.Velocidad1 = rand.Next(1, 11);
-        NPersonaje.caracteristicas.Destreza1 = rand.Next(1, 6);
-        NPersonaje.caracteristicas.Fuerza1 = rand.Next(1, 11);
-        NPersonaje.caracteristicas.Nivel1 = rand.Next(1, 11);
-        NPersonaje.caracteristicas.Armadura1 = rand.Next(1, 11);
+        NPersonaje.caracteristicas.Velocidad = rand.Next(1, 11);
+        NPersonaje.caracteristicas.Destreza = rand.Next(1, 6);
+        NPersonaje.caracteristicas.Fuerza = rand.Next(1, 11);
+        NPersonaje.caracteristicas.Nivel = rand.Next(1, 11);
+        NPersonaje.caracteristicas.Armadura = rand.Next(1, 11);
         
         int dato = rand.Next(1, 9);
 
         switch (dato)
         {
         case 1:
-            NPersonaje.datos.Tipo1 = Tipos.SueroSupersoldado;
-            NPersonaje.datos.Nombre1 = Nombres.SteveRogers;
-            NPersonaje.datos.Apodo1 = Apodos.CaptainAmerica;
+            NPersonaje.datos.Tipo = Tipos.SueroSupersoldado;
+            NPersonaje.datos.Nombre = Nombres.SteveRogers;
+            NPersonaje.datos.Apodo = Apodos.CaptainAmerica;
             break;
         case 2:
-            NPersonaje.datos.Tipo1 = Tipos.Vuela;
-            NPersonaje.datos.Nombre1 = Nombres.TonyStark;
-            NPersonaje.datos.Apodo1 = Apodos.IronMan;
+            NPersonaje.datos.Tipo = Tipos.Vuela;
+            NPersonaje.datos.Nombre = Nombres.TonyStark;
+            NPersonaje.datos.Apodo = Apodos.IronMan;
             break;
         case 3:
-            NPersonaje.datos.Tipo1 = Tipos.ArtesMarciales;
-            NPersonaje.datos.Nombre1 = Nombres.NatashaRomanoff;
-            NPersonaje.datos.Apodo1 = Apodos.BlackWidow;
+            NPersonaje.datos.Tipo = Tipos.ArtesMarciales;
+            NPersonaje.datos.Nombre = Nombres.NatashaRomanoff;
+            NPersonaje.datos.Apodo = Apodos.BlackWidow;
             break;
         case 4:
-            NPersonaje.datos.Tipo1 = Tipos.SueroSupersoldado;
-            NPersonaje.datos.Nombre1 = Nombres.BruceBanner;
-            NPersonaje.datos.Apodo1 = Apodos.Hulk;
+            NPersonaje.datos.Tipo = Tipos.SueroSupersoldado;
+            NPersonaje.datos.Nombre = Nombres.BruceBanner;
+            NPersonaje.datos.Apodo = Apodos.Hulk;
             break;
         case 5:
-            NPersonaje.datos.Tipo1 = Tipos.Magia;
-            NPersonaje.datos.Nombre1 = Nombres.StephenStrange;
-            NPersonaje.datos.Apodo1 = Apodos.DrStrange;
+            NPersonaje.datos.Tipo = Tipos.Magia;
+            NPersonaje.datos.Nombre = Nombres.StephenStrange;
+            NPersonaje.datos.Apodo = Apodos.DrStrange;
             break;
         case 6:
-            NPersonaje.datos.Tipo1 = Tipos.PiedaDelInfinito;
-            NPersonaje.datos.Nombre1 = Nombres.WandaMaximoff;
-            NPersonaje.datos.Apodo1 = Apodos.ScarletWich;
+            NPersonaje.datos.Tipo = Tipos.PiedaDelInfinito;
+            NPersonaje.datos.Nombre = Nombres.WandaMaximoff;
+            NPersonaje.datos.Apodo = Apodos.ScarletWich;
             break;
         case 7:
-            NPersonaje.datos.Tipo1 = Tipos.ArtesMarciales;
-            NPersonaje.datos.Nombre1 = Nombres.ClintBarton;
-            NPersonaje.datos.Apodo1 = Apodos.Hawkeye;
+            NPersonaje.datos.Tipo = Tipos.ArtesMarciales;
+            NPersonaje.datos.Nombre = Nombres.ClintBarton;
+            NPersonaje.datos.Apodo = Apodos.Hawkeye;
             break;
         case 8:
-            NPersonaje.datos.Tipo1 = Tipos.ArtesMarciales;
-            NPersonaje.datos.Nombre1 = Nombres.PeterParker;
-            NPersonaje.datos.Apodo1 = Apodos.SpiderMan;
+            NPersonaje.datos.Tipo = Tipos.ArtesMarciales;
+            NPersonaje.datos.Nombre = Nombres.PeterParker;
+            NPersonaje.datos.Apodo = Apodos.SpiderMan;
             break;
         default:
             break;
         }
 
-        NPersonaje.datos.FechaNac1 = new DateTime(rand.Next(1710, 2011), rand.Next(1, 13), rand.Next(1, 29));
+        NPersonaje.datos.FechaNac = new DateTime(rand.Next(1710, 2011), rand.Next(1, 13), rand.Next(1, 29));
 
-        NPersonaje.datos.Edad1 = NPersonaje.calcularEdad(NPersonaje.datos.FechaNac1);
+        NPersonaje.datos.Edad = NPersonaje.calcularEdad(NPersonaje.datos.FechaNac);
 
-        NPersonaje.datos.Salud1 = 100;
+        NPersonaje.datos.Salud = 100;
 
         return NPersonaje;
     }
@@ -159,36 +162,36 @@ public class Personaje
     public void mostrarDatos()
     {
         Console.WriteLine("\n\n----------PERSONAJE----------");
-        Console.WriteLine("Tipo: " + datos.Tipo1);
-        Console.WriteLine("Nombre: " +  datos.Nombre1);
-        Console.WriteLine("Apodo: " + datos.Apodo1);
-        Console.WriteLine("Fecha de nacimiento: " + datos.FechaNac1.ToShortDateString());
-        Console.WriteLine($"Edad: [{datos.Edad1}] años");
-        Console.WriteLine($"Salud: [{datos.Salud1}] vida/s");
-        Console.WriteLine($"Velocidad: [{caracteristicas.Velocidad1}] km/h");
-        Console.WriteLine($"Destreza: [{caracteristicas.Destreza1}]");
-        Console.WriteLine($"Fuerza: [{caracteristicas.Fuerza1}]");
-        Console.WriteLine($"Nivel: [{caracteristicas.Nivel1}]");
-        Console.WriteLine($"Armadura: [{caracteristicas.Armadura1}]");
+        Console.WriteLine("Tipo: " + Datos.Tipo);
+        Console.WriteLine("Nombre: " +  Datos.Nombre);
+        Console.WriteLine("Apodo: " + Datos.Apodo);
+        Console.WriteLine("Fecha de nacimiento: " + Datos.FechaNac.ToShortDateString());
+        Console.WriteLine($"Edad: [{Datos.Edad}] años");
+        Console.WriteLine($"Salud: [{Datos.Salud}] vida/s");
+        Console.WriteLine($"Velocidad: [{Caracteristicas.Velocidad}] km/h");
+        Console.WriteLine($"Destreza: [{Caracteristicas.Destreza}]");
+        Console.WriteLine($"Fuerza: [{Caracteristicas.Fuerza}]");
+        Console.WriteLine($"Nivel: [{Caracteristicas.Nivel}]");
+        Console.WriteLine($"Armadura: [{Caracteristicas.Armadura}]");
     } 
 
     public void mostrarApodo()
     {
-        Console.WriteLine(datos.Apodo1);
+        Console.WriteLine(Datos.Apodo);
     }
 
     public void mejoraDeHabilidades(Personaje ganador){
-        if (ganador.datos.Salud1 == 100)
+        if (ganador.Datos.Salud == 100)
         {
             Random rand = new Random();
             int agregarFuerza = rand.Next(5, 11);
-            ganador.caracteristicas.Fuerza1 = ganador.caracteristicas.Fuerza1 + (ganador.caracteristicas.Fuerza1 / agregarFuerza);
+            ganador.caracteristicas.Fuerza = ganador.Caracteristicas.Fuerza + (ganador.Caracteristicas.Fuerza / agregarFuerza);
         } else
         {
-            ganador.datos.Salud1 = ganador.datos.Salud1 + (ganador.datos.Salud1 / 10);
-            if (ganador.datos.Salud1 > 100)
+            ganador.datos.Salud = ganador.Datos.Salud + (ganador.Datos.Salud / 10);
+            if (ganador.Datos.Salud > 100)
             {
-                ganador.datos.Salud1 = 100;
+                ganador.datos.Salud = 100;
             }
         }
     }

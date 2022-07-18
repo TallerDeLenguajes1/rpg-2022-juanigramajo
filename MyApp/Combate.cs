@@ -20,21 +20,21 @@ public class Combate{
 
     public int combate(Personaje atacante, Personaje defensor){
         
-        PD = atacante.caracteristicas.Destreza1 * atacante.caracteristicas.Fuerza1 * atacante.caracteristicas.Nivel1;
+        PD = atacante.Caracteristicas.Destreza * atacante.Caracteristicas.Fuerza * atacante.Caracteristicas.Nivel;
 
         Random rand = new Random();
         ED = rand.Next(1,100);
 
         VA = (PD * ED) / 100;
 
-        PDEF = defensor.caracteristicas.Armadura1 * defensor.caracteristicas.Velocidad1;
+        PDEF = defensor.Caracteristicas.Armadura * defensor.Caracteristicas.Velocidad;
 
         MDP = 50000;
         
         DP = ((VA * ED - PDEF) / MDP) * 100;
 
-        defensor.datos.Salud1 = defensor.datos.Salud1 - Convert.ToInt32(DP);
+        defensor.Datos.Salud = defensor.Datos.Salud - Convert.ToInt32(DP);
 
-        return defensor.datos.Salud1;
+        return defensor.Datos.Salud;
     }
 }
