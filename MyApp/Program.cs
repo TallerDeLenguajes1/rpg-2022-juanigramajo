@@ -1,7 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
+
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
 
 int indefinido = 999;
 
@@ -22,6 +25,56 @@ if (!File.Exists(PathJson))
 {
     File.Create(PathJson);
 }
+
+
+var url = $"https://gateway.marvel.com/v1/public/characters?ts=1&apikey=c6f86a5cab2f10032f3a43922c0e5aa3&hash=b101071c45fce5add4e808a4de1c85be";
+var request = (HttpWebRequest)WebRequest.Create(url);
+request.Method = "GET";
+request.ContentType = "application/json";
+request.Accept = "application/json";
+
+
+try
+{
+    using (WebResponse response = request.GetResponse())
+    {
+        using (Stream strReader = response.GetResponseStream())
+        {
+            if (strReader == null) return;
+            using (StreamReader objReader = new StreamReader(strReader))
+            {
+                string responseBody = objReader.ReadToEnd();
+
+
+                Data Listado = JsonSerializer.Deserialize<Data>(responseBody);
+                
+                foreach (Result result in Listado.Results)
+                {
+                    Console.WriteLine("\nID: [" + result.Id + "]\nNombre: " + result.Name);
+                }
+
+
+                // Console.WriteLine("\n-------------------------------------------\n");
+                // Console.WriteLine($"ID: [{Listado.Civilizations[22].Id}]");
+                // Console.WriteLine("Nombre: " + Listado.Civilizations[22].Name);
+                // Console.WriteLine("Expansion: " + Listado.Civilizations[22].Expansion);
+                // Console.WriteLine("Tipo de ejército: " + Listado.Civilizations[22].ArmyType);
+                // Console.WriteLine("Bono de equipo: " + Listado.Civilizations[22].TeamBonus);
+            }
+        }
+    }
+}
+
+catch (WebException ex)
+{
+    Console.WriteLine("\nNo pudimos conectar con la API.");
+}
+
+
+
+
+
+
 
 
 
