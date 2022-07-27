@@ -6,50 +6,83 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
-int indefinido = 999;
+
+int indefinido;
+List<Personaje> ListadoDePersonajes;
+string PathCarpeta, PathJson;
+
+creacionDeCarpetasYVariables(out indefinido, out ListadoDePersonajes, out PathCarpeta, out PathJson);
+
+menuPrincipal();
 
 
 
-List<Personaje> ListadoDePersonajes = new List<Personaje>();
 
-// Acá creo los archivos csv y Json
-string PathCarpeta = "ganadores.csv";
-string PathJson = "jugadores.json";
 
-if (!File.Exists(PathCarpeta))
+
+
+void creacionDeCarpetasYVariables(out int indefinido, out List<Personaje> ListadoDePersonajes, out string PathCarpeta, out string PathJson)
 {
-    File.Create(PathCarpeta);
+    indefinido = 999;
+
+
+    ListadoDePersonajes = new List<Personaje>();
+
+    // Acá creo los archivos csv y Json
+    PathCarpeta = "ganadores.csv";
+    PathJson = "jugadores.json";
+    if (!File.Exists(PathCarpeta))
+    {
+        File.Create(PathCarpeta);
+    }
+
+    if (!File.Exists(PathJson))
+    {
+        File.Create(PathJson);
+    }
 }
 
-if (!File.Exists(PathJson))
+void menuPrincipal()
 {
-    File.Create(PathJson);
+    System.Console.WriteLine("\n\n----------MENU PRINCIPAL----------\nOPCIONES:\n[1]: Mostrar historial de combates\n[2]: Jugar\n[3]: Salir del juego\nIngrese una opción:");
+    int opcion = int.Parse(Console.ReadLine());
+    while ((opcion < 1) || (opcion > 3))
+    {
+        Console.WriteLine($"\nError de formato.\nOPCIONES:\n[1]: Mostrar historial de combates\n[2]: Jugar\n[3]: Salir del juego\nIngrese una opción:");
+        opcion = int.Parse(Console.ReadLine());
+    }
+
+    switch (opcion)
+    {
+        case 1:
+            mostrarHistorialDeCombates();
+            menuPrincipal();
+            break;
+        case 2:
+            // ACÁ INICIA EL JUEGO
+
+            ListadoDePersonajes = CargaDePersonajes();
+            JUEGO(indefinido, ListadoDePersonajes, PathCarpeta);
+            break;
+        case 3:
+            break;
+        default:
+            break;
+    }
 }
 
+void JUEGO(int indefinido, List<Personaje> ListadoDePersonajes, string PathCarpeta)
+{
+    Console.WriteLine("\n\nAhora si, a jugar...");
+    mostrarPersonajesDisponibles(ListadoDePersonajes);
+    int jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count, indefinido);
+    int jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count, jugador1);
+    int perdedor = pelea(ListadoDePersonajes, jugador1, jugador2);
 
-
-
-
-// ACÁ INICIA EL JUEGO MOSTRANDO EL HISTORIAL DE COMBATES
-mostrarHistorialDeCombates();
-
-// Acá creo los personajes
-ListadoDePersonajes = CargaDePersonajes();
-
-
-Console.WriteLine("\n\nAhora si, a jugar...");
-mostrarPersonajesDisponibles(ListadoDePersonajes);
-int jugador1 = elegirPersonaje(1, ListadoDePersonajes.Count, indefinido);
-int jugador2 = elegirPersonaje(2, ListadoDePersonajes.Count, jugador1);
-int perdedor = pelea(ListadoDePersonajes, jugador1, jugador2);
-
-Personaje ganador = opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
-mostrarGanador(ganador);
-mostrarHistorialDeCombates();
-
-
-
-
+    Personaje ganador = opcionesDeUsuarioSegunPerdedor(ListadoDePersonajes, jugador1, jugador2, perdedor);
+    mostrarGanador(ganador);
+    menuPrincipal();
+}
 
 bool corroborarExistencia(List<Personaje> ListadoDePersonajes, Personaje personaje, int indice)
 {
@@ -76,6 +109,74 @@ bool corroborarExistencia(List<Personaje> ListadoDePersonajes, Personaje persona
     }
 
     return bandera;
+}
+
+List<Personaje> CargaDePersonajes()
+{
+    // Guardo la cantidad de personajes
+    string jsonCantJugadores = File.ReadAllText(PathJson);
+
+    if (jsonCantJugadores.Length > 0) // Corroboro que hayan personajes
+    {
+        Console.WriteLine("\n\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
+        int opcion = int.Parse(Console.ReadLine());
+        while ((opcion < 1) || (opcion > 2))
+        {
+            Console.WriteLine($"\nError de formato.\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
+            opcion = int.Parse(Console.ReadLine());
+        }
+
+        if (opcion == 1)
+        {   // Como hay personajes y quiero cargarlos, deserializo el json y guardo los objetos en la lista
+            ListadoDePersonajes = JsonSerializer.Deserialize<List<Personaje>>(jsonCantJugadores);
+        }
+        else
+        {   // Como hay personajes pero no quiere cargarlos, los genero aleatorio y pregunto si quiere actualizar la lista anterior
+            generarPersonajesAleatorios(ListadoDePersonajes);
+            Console.WriteLine("\n¿Desea actualizar el listado anterior de personajes?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
+            char salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+            while ((salida != 's') && (salida != 'n'))
+            {
+                Console.WriteLine("\nError de formato.\n¿Desea actualizar el listado anterior de personajes?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
+                salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+            }
+            if (salida == 's')
+            {
+                string JsonString = JsonSerializer.Serialize(ListadoDePersonajes);
+                File.WriteAllText(PathJson, JsonString);
+            }
+        }
+    }
+    else
+    {   // Como no hay personajes, los genero aleatorio y los guardo en el JSON
+        generarPersonajesAleatorios(ListadoDePersonajes);
+        string JsonString = JsonSerializer.Serialize(ListadoDePersonajes);
+        File.WriteAllText(PathJson, JsonString);
+    }
+
+    void generarPersonajesAleatorios(List<Personaje> ListadoDePersonajes)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            Personaje personaje = new Personaje();
+            personaje = personaje.cargarPersonajes();
+
+            ListadoDePersonajes.Add(personaje);
+
+            if ((ListadoDePersonajes.Count != 1))
+            {
+                // corroboro la existencia así no se crean personajes con nombres iguales
+                while (corroborarExistencia(ListadoDePersonajes, personaje, i))
+                {
+                    ListadoDePersonajes.Remove(personaje);
+                    personaje = personaje.cargarPersonajes();
+                    ListadoDePersonajes.Add(personaje);
+                }
+            }
+        }
+    }
+
+    return ListadoDePersonajes;
 }
 
 void mostrarPersonajesDisponibles(List<Personaje> ListadoDePersonajes)
@@ -382,99 +483,20 @@ void mostrarGanador(Personaje Ganador)
 
 void mostrarHistorialDeCombates()
 {
-    Console.WriteLine("\n\n¿Desea ver el historial de combates de este juego?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
-    char salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
-    while ((salida != 's') && (salida != 'n'))
+    Console.WriteLine("\n\n");
+
+    List<string> LineasDelArchivo = File.ReadAllLines(PathCarpeta).ToList();
+
+    foreach (string Linea in LineasDelArchivo)
     {
-        Console.WriteLine("\nError de formato.\n¿Desea ver el historial de combates de este juego?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
-        salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
+        Console.WriteLine(Linea);
     }
-
-    if (salida == 's')
-    {
-        Console.WriteLine("\n\n");
-
-        List<string> LineasDelArchivo = File.ReadAllLines(PathCarpeta).ToList();
-
-        foreach (string Linea in LineasDelArchivo)
-        {
-            Console.WriteLine(Linea);
-        }
-    }
-}
-
-List<Personaje> CargaDePersonajes()
-{
-    // Guardo la cantidad de personajes
-    string jsonCantJugadores = File.ReadAllText(PathJson);
-
-    if (jsonCantJugadores.Length > 0) // Corroboro que hayan personajes
-    {
-        Console.WriteLine("\n\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
-        int opcion = int.Parse(Console.ReadLine());
-        while ((opcion < 1) || (opcion > 2))
-        {
-            Console.WriteLine($"\nError de formato.\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
-            opcion = int.Parse(Console.ReadLine());
-        }
-
-        if (opcion == 1)
-        {   // Como hay personajes y quiero cargarlos, deserializo el json y guardo los objetos en la lista
-            ListadoDePersonajes = JsonSerializer.Deserialize<List<Personaje>>(jsonCantJugadores);
-        }
-        else
-        {   // Como hay personajes pero no quiere cargarlos, los genero aleatorio y pregunto si quiere actualizar la lista anterior
-            generarPersonajesAleatorios(ListadoDePersonajes);
-            Console.WriteLine("\n¿Desea actualizar el listado anterior de personajes?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
-            char salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
-            while ((salida != 's') && (salida != 'n'))
-            {
-                Console.WriteLine("\nError de formato.\n¿Desea actualizar el listado anterior de personajes?\nOPCIONES\n[S] Si\n[N] No\nIngrese una opción: ");
-                salida = Char.ToLower(Convert.ToChar(Console.ReadLine()));
-            }
-            if (salida == 's')
-            {
-                string JsonString = JsonSerializer.Serialize(ListadoDePersonajes);
-                File.WriteAllText(PathJson, JsonString);
-            }
-        }
-    }
-    else
-    {   // Como no hay personajes, los genero aleatorio y los guardo en el JSON
-        generarPersonajesAleatorios(ListadoDePersonajes);
-        string JsonString = JsonSerializer.Serialize(ListadoDePersonajes);
-        File.WriteAllText(PathJson, JsonString);
-    }
-
-    void generarPersonajesAleatorios(List<Personaje> ListadoDePersonajes)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            Personaje personaje = new Personaje();
-            personaje = personaje.cargarPersonajes();
-
-            ListadoDePersonajes.Add(personaje);
-
-            if ((ListadoDePersonajes.Count != 1))
-            {
-                // corroboro la existencia así no se crean personajes con nombres iguales
-                while (corroborarExistencia(ListadoDePersonajes, personaje, i))
-                {
-                    ListadoDePersonajes.Remove(personaje);
-                    personaje = personaje.cargarPersonajes();
-                    ListadoDePersonajes.Add(personaje);
-                }
-            }
-        }
-    }
-
-    return ListadoDePersonajes;
 }
 
 void API(Personaje Ganador)
-{   
+{
     string name = Ganador.Datos.ApodoBusquedaApi;
-    
+
     var url = $"https://gateway.marvel.com/v1/public/characters?nameStartsWith={name}&ts=1&apikey=c6f86a5cab2f10032f3a43922c0e5aa3&hash=b101071c45fce5add4e808a4de1c85be";
     var request = (HttpWebRequest)WebRequest.Create(url);
     request.Method = "GET";
@@ -498,18 +520,28 @@ void API(Personaje Ganador)
 
                     Listado = JsonSerializer.Deserialize<Root>(responseBody);
 
-                    foreach (Result result in Listado.Data.Results)
+
+
+                    Console.WriteLine("\nNombre: [" + Listado.Data.Results[0].Name + "]");
+
+                    for (int i = 0; i < Listado.Data.Results.Count; i++)
                     {
-                        Console.WriteLine("\nID: [" + result.Id + "]\nNombre: " + result.Name);
+                        if (Listado.Data.Results[i].Description != "")
+                        {
+                            Console.WriteLine("\n\nDescripción: " + Listado.Data.Results[i].Description);
+                            i = Listado.Data.Results.Count;
+                        }
                     }
 
-
-                    // Console.WriteLine("\n-------------------------------------------\n");
-                    // Console.WriteLine($"ID: [{Listado.Civilizations[22].Id}]");
-                    // Console.WriteLine("Nombre: " + Listado.Civilizations[22].Name);
-                    // Console.WriteLine("Expansion: " + Listado.Civilizations[22].Expansion);
-                    // Console.WriteLine("Tipo de ejército: " + Listado.Civilizations[22].ArmyType);
-                    // Console.WriteLine("Bono de equipo: " + Listado.Civilizations[22].TeamBonus);
+                    for (int j = 0; j < Listado.Data.Results.Count; j++)
+                    {
+                        if (Listado.Data.Results[j].Comics.Available > 0)
+                        {
+                            Console.WriteLine($"\nAparece en {Listado.Data.Results[j].Comics.Available} comics");
+                            Console.WriteLine("\nPor ejemplo, uno de ellos es: [ " + Listado.Data.Results[j].Comics.Items[0].Name + " ]");
+                            j = Listado.Data.Results.Count;
+                        }
+                    }
                 }
             }
         }
