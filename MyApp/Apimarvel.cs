@@ -74,7 +74,7 @@ using System.Text.Json.Serialization;
         public string Description { get; set; }
 
         [JsonPropertyName("modified")]
-        public DateTime Modified { get; set; }
+        public string Modified { get; set; }
 
         [JsonPropertyName("thumbnail")]
         public Thumbnail Thumbnail { get; set; }

@@ -56,6 +56,7 @@ public class Datos
     private DateTime fechaNac;
     private int edad;
     private int salud;
+    string apodoBusquedaApi;
 
     public Tipos Tipo { get => tipo; set => tipo = value; }
     public Nombres Nombre { get => nombre; set => nombre = value; }
@@ -63,6 +64,7 @@ public class Datos
     public DateTime FechaNac { get => fechaNac; set => fechaNac = value; }
     public int Edad { get => edad; set => edad = value; }
     public int Salud { get => salud; set => salud = value; }
+    public string ApodoBusquedaApi { get => apodoBusquedaApi; set => apodoBusquedaApi = value; }
 }
 
 
@@ -110,41 +112,49 @@ public class Personaje
             NPersonaje.datos.Tipo = Tipos.SueroSupersoldado;
             NPersonaje.datos.Nombre = Nombres.SteveRogers;
             NPersonaje.datos.Apodo = Apodos.CaptainAmerica;
+            NPersonaje.datos.ApodoBusquedaApi = "Captain America/Steve Rogers";
             break;
         case 2:
             NPersonaje.datos.Tipo = Tipos.Vuela;
             NPersonaje.datos.Nombre = Nombres.TonyStark;
             NPersonaje.datos.Apodo = Apodos.IronMan;
+            NPersonaje.datos.ApodoBusquedaApi = "Iron Man/Tony Stark";
             break;
         case 3:
             NPersonaje.datos.Tipo = Tipos.ArtesMarciales;
             NPersonaje.datos.Nombre = Nombres.NatashaRomanoff;
             NPersonaje.datos.Apodo = Apodos.BlackWidow;
+            NPersonaje.datos.ApodoBusquedaApi = "Black Widow/Natasha Romanoff";
             break;
         case 4:
             NPersonaje.datos.Tipo = Tipos.SueroSupersoldado;
             NPersonaje.datos.Nombre = Nombres.BruceBanner;
             NPersonaje.datos.Apodo = Apodos.Hulk;
+            NPersonaje.datos.ApodoBusquedaApi = "Hulk/Bruce Banner";
             break;
         case 5:
             NPersonaje.datos.Tipo = Tipos.Magia;
             NPersonaje.datos.Nombre = Nombres.StephenStrange;
             NPersonaje.datos.Apodo = Apodos.DrStrange;
+            NPersonaje.datos.ApodoBusquedaApi = "Stephen";
             break;
         case 6:
             NPersonaje.datos.Tipo = Tipos.PiedaDelInfinito;
             NPersonaje.datos.Nombre = Nombres.WandaMaximoff;
             NPersonaje.datos.Apodo = Apodos.ScarletWich;
+            NPersonaje.datos.ApodoBusquedaApi = "Scarlet";
             break;
         case 7:
             NPersonaje.datos.Tipo = Tipos.ArtesMarciales;
             NPersonaje.datos.Nombre = Nombres.ClintBarton;
             NPersonaje.datos.Apodo = Apodos.Hawkeye;
+            NPersonaje.datos.ApodoBusquedaApi = "Hawkeye/Clint Barton";
             break;
         case 8:
             NPersonaje.datos.Tipo = Tipos.ArtesMarciales;
             NPersonaje.datos.Nombre = Nombres.PeterParker;
             NPersonaje.datos.Apodo = Apodos.SpiderMan;
+            NPersonaje.datos.ApodoBusquedaApi = "Spider-Man (Peter Parker)";
             break;
         default:
             break;

@@ -27,55 +27,6 @@ if (!File.Exists(PathJson))
 }
 
 
-var url = $"https://gateway.marvel.com/v1/public/characters?ts=1&apikey=c6f86a5cab2f10032f3a43922c0e5aa3&hash=b101071c45fce5add4e808a4de1c85be";
-var request = (HttpWebRequest)WebRequest.Create(url);
-request.Method = "GET";
-request.ContentType = "application/json";
-request.Accept = "application/json";
-
-
-try
-{
-    using (WebResponse response = request.GetResponse())
-    {
-        using (Stream strReader = response.GetResponseStream())
-        {
-            if (strReader == null) return;
-            using (StreamReader objReader = new StreamReader(strReader))
-            {
-                string responseBody = objReader.ReadToEnd();
-
-
-                Data Listado = JsonSerializer.Deserialize<Data>(responseBody);
-                
-                foreach (Result result in Listado.Results)
-                {
-                    Console.WriteLine("\nID: [" + result.Id + "]\nNombre: " + result.Name);
-                }
-
-
-                // Console.WriteLine("\n-------------------------------------------\n");
-                // Console.WriteLine($"ID: [{Listado.Civilizations[22].Id}]");
-                // Console.WriteLine("Nombre: " + Listado.Civilizations[22].Name);
-                // Console.WriteLine("Expansion: " + Listado.Civilizations[22].Expansion);
-                // Console.WriteLine("Tipo de ejército: " + Listado.Civilizations[22].ArmyType);
-                // Console.WriteLine("Bono de equipo: " + Listado.Civilizations[22].TeamBonus);
-            }
-        }
-    }
-}
-
-catch (WebException ex)
-{
-    Console.WriteLine("\nNo pudimos conectar con la API.");
-}
-
-
-
-
-
-
-
 
 
 
@@ -99,6 +50,7 @@ mostrarHistorialDeCombates();
 
 
 
+
 bool corroborarExistencia(List<Personaje> ListadoDePersonajes, Personaje personaje, int indice)
 {
     bool bandera = true;
@@ -110,7 +62,8 @@ bool corroborarExistencia(List<Personaje> ListadoDePersonajes, Personaje persona
             if (i == indice) //si es el mismo nombre pero el mismo indice es porque el dato es el último agregado, no se repitió
             {
                 bandera = false;
-            } else
+            }
+            else
             {
                 bandera = true;
                 return bandera;
@@ -131,7 +84,7 @@ void mostrarPersonajesDisponibles(List<Personaje> ListadoDePersonajes)
     for (int i = 0; i < ListadoDePersonajes.Count; i++)
     {
         Console.Write($"[{i}]");
-        ListadoDePersonajes[i].mostrarApodo();   
+        ListadoDePersonajes[i].mostrarApodo();
     }
 }
 
@@ -259,9 +212,9 @@ int pelea(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2)
     }
 
     for (int j = 0; j < 3; j++) //hasta 3 porque son 3 golpes que piden en la consigna
-    {   
+    {
         if ((ListadoDePersonajes[jugador1].Datos.Salud > 0) && (ListadoDePersonajes[jugador2].Datos.Salud > 0)) //corroboro que tengan salud sino no tiene sentido seguir la batalla
-        {    
+        {
             if (primeroEnAtacar == 1)
             {
                 ListadoDePersonajes[jugador2].Datos.Salud = combate.combate(ListadoDePersonajes[jugador1], ListadoDePersonajes[jugador2]); //ataca primero jugador 1, defiende jugador 2
@@ -280,29 +233,33 @@ int pelea(List<Personaje> ListadoDePersonajes, int jugador1, int jugador2)
 
 int corroborarPerdedor(Personaje jugador1, Personaje jugador2, int numEnListaJugador1, int numEnListaJugador2)
 {
-    if((jugador1.Datos.Salud != 0)  &&  (jugador2.Datos.Salud != 0)) //corroboro que ambos tengan algo de salud
+    if ((jugador1.Datos.Salud != 0) && (jugador2.Datos.Salud != 0)) //corroboro que ambos tengan algo de salud
     {
-        if(jugador1.Datos.Salud > jugador2.Datos.Salud) //gana el jugador 1
-        {    
+        if (jugador1.Datos.Salud > jugador2.Datos.Salud) //gana el jugador 1
+        {
             jugador1.mejoraDeHabilidades(jugador1);
             return numEnListaJugador2; //retorno jugador 2 como perdedor
-        } else //gana el jugador 2
+        }
+        else //gana el jugador 2
         {
             jugador2.mejoraDeHabilidades(jugador2);
             return numEnListaJugador1; //retorno jugador 1 como perdedor
         }
-    }else
+    }
+    else
     {
-        if((jugador1.Datos.Salud == 0) && (jugador2.Datos.Salud == 0)) //si hay empate retorno un número cualquiera e insignificante
-        {   
-            return 9;
-        } else
+        if ((jugador1.Datos.Salud == 0) && (jugador2.Datos.Salud == 0)) //si hay empate retorno un número cualquiera e insignificante
         {
-            if(jugador1.Datos.Salud == 0) //el jugador 1 no tiene vida, gana el jugador 2
+            return 9;
+        }
+        else
+        {
+            if (jugador1.Datos.Salud == 0) //el jugador 1 no tiene vida, gana el jugador 2
             {
                 jugador2.mejoraDeHabilidades(jugador2);
                 return numEnListaJugador1; //retorno jugador 1 como perdedor
-            } else //el jugador 2 no tiene vida, gana el jugador 1
+            }
+            else //el jugador 2 no tiene vida, gana el jugador 1
             {
                 jugador1.mejoraDeHabilidades(jugador1);
                 return numEnListaJugador2; //retorno jugador 2 como perdedor
@@ -333,7 +290,7 @@ Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, in
             return ListadoDePersonajes[0];
         }
         mostrarPersonajesDisponibles(ListadoDePersonajes);
-        
+
         if (jugador2 == ListadoDePersonajes.Count) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
         {
             jugador2--;
@@ -368,7 +325,7 @@ Personaje opcionesDeUsuarioSegunPerdedor(List<Personaje> ListadoDePersonajes, in
             return ListadoDePersonajes[0];
         }
         mostrarPersonajesDisponibles(ListadoDePersonajes);
-        
+
         if (jugador1 == ListadoDePersonajes.Count) //hago este control por si el personaje estaba en la última posición de la lista, ya que si se borra un elemento se borra el último índice
         {
             jugador1--;
@@ -419,6 +376,8 @@ void mostrarGanador(Personaje Ganador)
 
     string linea = $"\nGANADOR: {Ganador.Datos.Apodo} con [{Ganador.Datos.Salud}] vidas restantes\n\n";
     File.AppendAllText(PathCarpeta, linea);
+
+    API(Ganador);
 }
 
 void mostrarHistorialDeCombates()
@@ -510,4 +469,55 @@ List<Personaje> CargaDePersonajes()
     }
 
     return ListadoDePersonajes;
+}
+
+void API(Personaje Ganador)
+{   
+    string name = Ganador.Datos.ApodoBusquedaApi;
+    
+    var url = $"https://gateway.marvel.com/v1/public/characters?nameStartsWith={name}&ts=1&apikey=c6f86a5cab2f10032f3a43922c0e5aa3&hash=b101071c45fce5add4e808a4de1c85be";
+    var request = (HttpWebRequest)WebRequest.Create(url);
+    request.Method = "GET";
+    request.ContentType = "application/json";
+    request.Accept = "application/json";
+
+
+    Root Listado = new Root();
+
+    try
+    {
+        using (WebResponse response = request.GetResponse())
+        {
+            using (Stream strReader = response.GetResponseStream())
+            {
+                if (strReader == null) return;
+                using (StreamReader objReader = new StreamReader(strReader))
+                {
+                    string responseBody = objReader.ReadToEnd();
+
+
+                    Listado = JsonSerializer.Deserialize<Root>(responseBody);
+
+                    foreach (Result result in Listado.Data.Results)
+                    {
+                        Console.WriteLine("\nID: [" + result.Id + "]\nNombre: " + result.Name);
+                    }
+
+
+                    // Console.WriteLine("\n-------------------------------------------\n");
+                    // Console.WriteLine($"ID: [{Listado.Civilizations[22].Id}]");
+                    // Console.WriteLine("Nombre: " + Listado.Civilizations[22].Name);
+                    // Console.WriteLine("Expansion: " + Listado.Civilizations[22].Expansion);
+                    // Console.WriteLine("Tipo de ejército: " + Listado.Civilizations[22].ArmyType);
+                    // Console.WriteLine("Bono de equipo: " + Listado.Civilizations[22].TeamBonus);
+                }
+            }
+        }
+    }
+
+    catch (WebException ex)
+    {
+        Console.WriteLine("\nNo pudimos conectar con la API.");
+    }
+
 }
