@@ -118,11 +118,11 @@ List<Personaje> CargaDePersonajes()
 
     if (jsonCantJugadores.Length > 0) // Corroboro que hayan personajes
     {
-        Console.WriteLine("\n\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
+        Console.WriteLine("\n\nOPCIONES\n[1] Cargar personajes\n[2] Generar personajes nuevos\nIngrese una opción: ");
         int opcion = int.Parse(Console.ReadLine());
         while ((opcion < 1) || (opcion > 2))
         {
-            Console.WriteLine($"\nError de formato.\nOPCIONES\n[1] Cargar jugadores\n[2] Generar jugadores nuevos\nIngrese una opción: ");
+            Console.WriteLine($"\nError de formato.\nOPCIONES\n[1] Cargar personajes\n[2] Generar personajes nuevos\nIngrese una opción: ");
             opcion = int.Parse(Console.ReadLine());
         }
 
@@ -194,74 +194,8 @@ int elegirPersonaje(int num, int cantPersonajes, int personajeElegido)
     Console.WriteLine($"\nJUGADOR [{num}] Escoja un personaje: ");
     int opcion = int.Parse(Console.ReadLine());
 
-    //el switch cant personajes es un control para que el usuario no rompa el programa queriendo poner un número distinto a la cantidad de personajes
-    switch (cantPersonajes)
-    {
-        case 1:
-            while ((opcion < 0) || (opcion > 0))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        case 2:
-            while ((opcion < 0) || (opcion > 1))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        case 3:
-            while ((opcion < 0) || (opcion > 2))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        case 4:
-            while ((opcion < 0) || (opcion > 3))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        case 5:
-            while ((opcion < 0) || (opcion > 4))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        case 6:
-            while ((opcion < 0) || (opcion > 5))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        case 7:
-            while ((opcion < 0) || (opcion > 6))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        case 8:
-            while ((opcion < 0) || (opcion > 7))
-            {
-                Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
-                opcion = int.Parse(Console.ReadLine());
-            }
-            break;
-        default:
-            break;
-    }
-
-    while (opcion == personajeElegido)
-    {
-        Console.WriteLine($"\nEl personaje ya fue elegido.\nJUGADOR [{num}] Escoja un personaje: ");
-        opcion = int.Parse(Console.ReadLine());
-    }
+    
+    opcion = corroborarOpcion(num, cantPersonajes, personajeElegido, opcion);
 
     //el switch opción es para retornar el indice del personaje elegido, retorna de 0 a 8 porque son los elementos de la lista, caso de 1 a 8 porque así muestro los personajes
     switch (opcion)
@@ -292,6 +226,84 @@ int elegirPersonaje(int num, int cantPersonajes, int personajeElegido)
             break;
         default:
             break;
+    }
+
+
+    int corroborarOpcion(int num, int cantPersonajes, int personajeElegido, int opcion)
+    {
+        //el switch cant personajes es un control para que el usuario no rompa el programa queriendo poner un número distinto a la cantidad de personajes
+        switch (cantPersonajes)
+        {
+            case 1:
+                while ((opcion < 0) || (opcion > 0))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            case 2:
+                while ((opcion < 0) || (opcion > 1))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            case 3:
+                while ((opcion < 0) || (opcion > 2))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            case 4:
+                while ((opcion < 0) || (opcion > 3))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            case 5:
+                while ((opcion < 0) || (opcion > 4))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            case 6:
+                while ((opcion < 0) || (opcion > 5))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            case 7:
+                while ((opcion < 0) || (opcion > 6))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            case 8:
+                while ((opcion < 0) || (opcion > 7))
+                {
+                    Console.WriteLine($"\nError de formato.\nJUGADOR [{num}] Escoja un personaje: ");
+                    opcion = int.Parse(Console.ReadLine());
+                }
+                break;
+            default:
+                break;
+        }
+
+        while (opcion == personajeElegido)
+        {
+            Console.WriteLine($"\nEl personaje ya fue elegido.\nJUGADOR [{num}] Escoja un personaje: ");
+            opcion = int.Parse(Console.ReadLine());
+
+            opcion = corroborarOpcion(num, cantPersonajes, personajeElegido, opcion);
+        }
+
+
+        return opcion;
     }
 
     return 0;
